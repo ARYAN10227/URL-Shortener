@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Link2, LayoutDashboard, FileText, Activity } from 'lucide-react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link2, LayoutDashboard, FileText, Activity, LogIn, UserPlus, LogOut, User } from 'lucide-react';
 import apiService from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 function GithubIcon({ size = 18 }) {
   return (
@@ -12,6 +14,9 @@ function GithubIcon({ size = 18 }) {
 }
 
 export default function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth();
+  const { addToast } = useToast();
+  const navigate = useNavigate();
   const [apiOnline, setApiOnline] = useState(null);
 
   useEffect(() => {
@@ -31,6 +36,12 @@ export default function Navbar() {
       isMounted = false;
     };
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    addToast('You have been logged out.', 'success');
+    navigate('/');
+  };
 
   return (
     <nav className="navbar">
@@ -62,13 +73,15 @@ export default function Navbar() {
             Home
           </NavLink>
 
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-          >
-            <LayoutDashboard size={16} />
-            <span>Dashboard</span>
-          </NavLink>
+          {isAuthenticated && (
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            >
+              <LayoutDashboard size={16} />
+              <span>Dashboard</span>
+            </NavLink>
+          )}
 
           <a
             href="https://url-shortener-api-h1dj.onrender.com/api-docs"
@@ -90,6 +103,64 @@ export default function Navbar() {
           >
             <GithubIcon size={19} />
           </a>
+
+          {/* Authentication Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginLeft: '0.5rem' }}>
+            {isAuthenticated ? (
+              <>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    background: 'var(--bg-input)',
+                    border: '1px solid var(--border-subtle)',
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: '0.85rem',
+                    color: 'var(--text-main)',
+                  }}
+                  title={user?.email}
+                >
+                  <User size={14} style={{ color: 'var(--primary)' }} />
+                  <span style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>
+                    {user?.name || user?.email}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="btn btn-secondary btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                  title="Sign out of account"
+                >
+                  <LogOut size={14} />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="btn btn-ghost btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                >
+                  <LogIn size={14} />
+                  <span>Log in</span>
+                </Link>
+
+                <Link
+                  to="/register"
+                  className="btn btn-primary btn-sm"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                >
+                  <UserPlus size={14} />
+                  <span>Get Started</span>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>

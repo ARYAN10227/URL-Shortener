@@ -11,6 +11,49 @@ const apiClient = axios.create({
   timeout: 60000, // 60s timeout for Render free tier cold starts
 });
 
+export const TOKEN_KEY = 'url_shortener_token';
+
+export function getToken() {
+  return localStorage.getItem(TOKEN_KEY) || localStorage.getItem('token');
+}
+
+export function setStoredToken(token) {
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token);
+  } else {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem('token');
+  }
+}
+
+// Centralized Axios Request Interceptor for JWT authentication
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Centralized Axios Response Interceptor for handling 401 unauthorized errors
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const requestUrl = error.config?.url || '';
+      // Only clear auth and trigger event if this isn't the login/register credential failure itself
+      if (!requestUrl.includes('/api/auth/login') && !requestUrl.includes('/api/auth/register')) {
+        setStoredToken(null);
+        window.dispatchEvent(new CustomEvent('auth:unauthorized', { detail: { error } }));
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 /**
  * Extracts a clean user-friendly error message from Axios errors
  */
@@ -39,6 +82,24 @@ export function buildShortUrl(shortCode) {
 }
 
 export const apiService = {
+  // POST /api/auth/register
+  register: async ({ name, email, password }) => {
+    const response = await apiClient.post('/api/auth/register', { name, email, password });
+    return response.data;
+  },
+
+  // POST /api/auth/login
+  login: async ({ email, password }) => {
+    const response = await apiClient.post('/api/auth/login', { email, password });
+    return response.data;
+  },
+
+  // GET /api/auth/me
+  getMe: async () => {
+    const response = await apiClient.get('/api/auth/me');
+    return response.data;
+  },
+
   // POST /api/urls
   shortenUrl: async ({ originalUrl, shortCode }) => {
     const payload = { originalUrl };

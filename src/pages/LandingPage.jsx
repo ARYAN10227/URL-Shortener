@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Link2,
   Sparkles,
@@ -14,12 +14,17 @@ import {
   AlertCircle,
   RotateCcw,
   CheckCircle2,
+  LogIn,
 } from 'lucide-react';
 import apiService, { getErrorMessage, buildShortUrl } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
   const { addToast } = useToast();
+  const navigate = useNavigate();
+
   const [originalUrl, setOriginalUrl] = useState('');
   const [shortCode, setShortCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,6 +40,11 @@ export default function LandingPage() {
     const trimmedUrl = originalUrl.trim();
     if (!trimmedUrl) {
       setError('Please enter a destination URL.');
+      return;
+    }
+
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: '/dashboard' } } });
       return;
     }
 
@@ -89,7 +99,7 @@ export default function LandingPage() {
         </h1>
 
         <p className="hero-subtitle">
-          Create clean, shareable URLs in milliseconds and monitor their performance with real-time click tracking and analytics.
+          Create clean, shareable URLs in milliseconds and monitor their performance with real-time click tracking and user analytics.
         </p>
 
         {/* Shortener Box */}
@@ -118,13 +128,10 @@ export default function LandingPage() {
 
               <div className="form-group">
                 <label className="form-label" htmlFor="custom-code">
-                  <span>Custom Short Code (Optional)</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                    Leave blank for auto-generation
-                  </span>
+                  <span>Custom Short Code <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>(optional)</span></span>
                 </label>
                 <div className="input-with-icon">
-                  <Sparkles size={18} className="input-icon" />
+                  <span className="input-prefix">shortly/</span>
                   <input
                     id="custom-code"
                     type="text"
@@ -169,6 +176,12 @@ export default function LandingPage() {
                   <>
                     <Loader2 size={20} className="spin" />
                     <span>Shortening link...</span>
+                  </>
+                ) : !isAuthenticated ? (
+                  <>
+                    <LogIn size={18} />
+                    <span>Sign In to Shorten URL</span>
+                    <ArrowRight size={18} />
                   </>
                 ) : (
                   <>
@@ -258,7 +271,7 @@ export default function LandingPage() {
           Everything you need for link tracking
         </h2>
         <p style={{ color: 'var(--text-muted)', maxWidth: '580px', margin: '0 auto 2.5rem' }}>
-          Robust infrastructure with low-latency redirection, comprehensive analytics, and seamless management.
+          Robust infrastructure with low-latency redirection, comprehensive analytics, and multi-user link isolation.
         </p>
 
         <div className="features-grid">
@@ -286,9 +299,9 @@ export default function LandingPage() {
             <div className="feature-icon-wrapper" style={{ background: 'var(--emerald-light)', color: 'var(--emerald)' }}>
               <ShieldCheck size={22} />
             </div>
-            <h3 className="feature-title">Enterprise Reliable</h3>
+            <h3 className="feature-title">Multi-User Security</h3>
             <p className="feature-desc">
-              Protected by Helmet security headers, rate limiting, and automated CI tests for high availability.
+              Protected by JWT Bearer authentication, bcrypt hashing, rate limiting, and strict per-user URL ownership isolation.
             </p>
           </div>
         </div>
@@ -317,8 +330,8 @@ export default function LandingPage() {
               Search, filter, paginate, edit aliases, and review aggregated click metrics.
             </p>
           </div>
-          <Link to="/dashboard" className="btn btn-primary btn-lg">
-            <span>Go to Dashboard</span>
+          <Link to={isAuthenticated ? "/dashboard" : "/register"} className="btn btn-primary btn-lg">
+            <span>{isAuthenticated ? "Go to Dashboard" : "Get Started Free"}</span>
             <ArrowRight size={18} />
           </Link>
         </div>
