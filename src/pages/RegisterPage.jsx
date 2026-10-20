@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, ArrowRight, Loader2, AlertCircle, Link2, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -7,7 +7,7 @@ import { getErrorMessage } from '../services/api';
 import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, isAuthenticated } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -16,6 +16,10 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,6 +87,9 @@ export default function RegisterPage() {
       </div>
 
       <div className="card" style={{ padding: '2rem' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <DemoLoginButton label="🚀 Just exploring? Try the demo instead" variant="primary" size="sm" />
+        </div>
         {error && (
           <div
             style={{
@@ -208,9 +215,6 @@ export default function RegisterPage() {
           >
             Log in here &rarr;
           </Link>
-          <div style={{ marginTop: '1rem' }}>
-            <DemoLoginButton label="Or skip sign-up: try the demo" size="sm" />
-          </div>
         </div>
       </div>
     </div>

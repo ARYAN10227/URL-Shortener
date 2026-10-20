@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Loader2, AlertCircle, Link2, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -7,7 +7,7 @@ import { getErrorMessage, DEMO_CREDENTIALS } from '../services/api';
 import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +18,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  if (isAuthenticated) {
+    return <Navigate to={fromPath} replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,36 +83,42 @@ export default function LoginPage() {
       <div className="card" style={{ padding: '2rem' }}>
         <div
           style={{
-            background: 'rgba(99, 102, 241, 0.08)',
-            border: '1px solid rgba(99, 102, 241, 0.3)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1rem 1.15rem',
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.16) 0%, rgba(168, 85, 247, 0.12) 100%)',
+            border: '1px solid rgba(129, 140, 248, 0.45)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1.25rem',
             marginBottom: '1.5rem',
-            fontSize: '0.875rem',
+            textAlign: 'center',
           }}
         >
-          <div style={{ fontWeight: 700, marginBottom: '0.35rem' }}>👋 Just looking around?</div>
-          <div style={{ color: 'var(--text-muted)', marginBottom: '0.85rem' }}>
-            Use the demo account — no sign-up needed.
-            <br />
-            Email: <code>{DEMO_CREDENTIALS.email}</code> · Password: <code>{DEMO_CREDENTIALS.password}</code>
+          <div style={{ fontWeight: 800, fontSize: '1.05rem', marginBottom: '0.3rem' }}>
+            🚀 Recruiter or just exploring?
           </div>
-          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-            <DemoLoginButton label="One-click demo login" size="sm" style={{ flex: '1 1 160px' }} />
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1rem' }}>
+            Skip sign-up — open a ready-made demo account with sample links and analytics.
+          </div>
+          <DemoLoginButton label="Enter with demo account" variant="primary" to={fromPath} />
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.85rem' }}>
+            Or log in manually: <code>{DEMO_CREDENTIALS.email}</code> / <code>{DEMO_CREDENTIALS.password}</code>{' '}
             <button
               type="button"
-              className="btn btn-ghost btn-sm"
-              style={{ flex: '1 1 140px' }}
               onClick={() => {
                 setEmail(DEMO_CREDENTIALS.email);
                 setPassword(DEMO_CREDENTIALS.password);
                 setError(null);
               }}
               disabled={loading}
+              style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, padding: 0, fontSize: 'inherit' }}
             >
-              Fill in demo credentials
+              (fill in)
             </button>
           </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '0 0 1.25rem', color: 'var(--text-dim)', fontSize: '0.8rem' }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} />
+          <span>or sign in with your account</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} />
         </div>
 
         {error && (
