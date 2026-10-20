@@ -11,8 +11,8 @@
 
 ### 🌐 [Open the live app → url-shortener-frontend-t-aryan.vercel.app](https://url-shortener-frontend-t-aryan.vercel.app)
 
-**No sign-up, no login:** open the Dashboard and you're signed in to a demo account automatically.
-Real accounts still work — demo credentials: `demo@urlshortener.dev` / `demo1234`
+**Recruiters & reviewers:** click **🚀 Try Demo** (top right) — one click, no sign-up.
+Or log in with the demo account: `demo@urlshortener.dev` / `demo1234`
 
 *The free backend sleeps when idle, so the very first load can take up to a minute.*
 
@@ -26,7 +26,7 @@ Real accounts still work — demo credentials: `demo@urlshortener.dev` / `demo12
 - **Dashboard** with search, sorting, filtering by clicks and pagination
 - **Edit and delete** links (with confirmation)
 - **Analytics** per link: total clicks and click history with date filters
-- **Accounts** with JWT authentication — and a **demo account** visitors are signed in to automatically
+- **Accounts** with JWT authentication, plus a one-click **shared demo account** (kept to its newest 20 links, sample links refill if emptied)
 - **Cold-start aware**: the free backend sleeps when idle, so the app shows a “waking up” notice
   instead of failing, and never logs you out just because the server is slow
 
