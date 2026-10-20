@@ -4,6 +4,7 @@ import { Link2, LayoutDashboard, FileText, Activity, LogIn, UserPlus, LogOut, Us
 import apiService from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import DemoLoginButton from './DemoLoginButton';
 
 function GithubIcon({ size = 18 }) {
   return (
@@ -18,6 +19,16 @@ export default function Navbar() {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [apiOnline, setApiOnline] = useState(null);
+
+  // The API client fires this when a saved session is rejected (expired or invalid token).
+  useEffect(() => {
+    const onUnauthorized = () => {
+      addToast('Your session has expired. Please log in again or use the demo.', 'error');
+      navigate('/login', { replace: true });
+    };
+    window.addEventListener('auth:unauthorized', onUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', onUnauthorized);
+  }, [addToast, navigate]);
 
   useEffect(() => {
     let isMounted = true;
@@ -73,14 +84,15 @@ export default function Navbar() {
             Home
           </NavLink>
 
-          {/* Always visible: visitors are signed in to the demo account automatically. */}
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-          >
-            <LayoutDashboard size={16} />
-            <span>Dashboard</span>
-          </NavLink>
+          {isAuthenticated && (
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            >
+              <LayoutDashboard size={16} />
+              <span>Dashboard</span>
+            </NavLink>
+          )}
 
           <a
             href="https://url-shortener-api-h1dj.onrender.com/api-docs"
@@ -150,13 +162,17 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  to="/dashboard"
-                  className="btn btn-primary btn-sm"
+                  to="/register"
+                  className="btn btn-ghost btn-sm"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
                   <UserPlus size={14} />
-                  <span>Live Demo</span>
+                  <span>Sign up</span>
                 </Link>
+
+                <div style={{ minWidth: '140px' }}>
+                  <DemoLoginButton label="Try Demo" size="sm" variant="primary" />
+                </div>
               </>
             )}
           </div>

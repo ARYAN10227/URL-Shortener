@@ -9,7 +9,7 @@ import { getErrorMessage } from '../services/api';
  * One-click login to the public demo account, so recruiters can try the app
  * without signing up. Shows a "waking up" hint if the free server is cold.
  */
-export default function DemoLoginButton({ label = 'Try the live demo', size = 'lg', style }) {
+export default function DemoLoginButton({ label = 'Try the live demo', size = 'lg', variant = 'secondary', to = '/dashboard', style }) {
   const { loginDemo } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function DemoLoginButton({ label = 'Try the live demo', size = 'l
     try {
       await loginDemo();
       addToast('Logged in to the demo account. Explore away!', 'success');
-      navigate('/dashboard', { replace: true });
+      navigate(to, { replace: true });
     } catch (err) {
       addToast(getErrorMessage(err), 'error');
     } finally {
@@ -40,7 +40,7 @@ export default function DemoLoginButton({ label = 'Try the live demo', size = 'l
     <div style={{ width: '100%', ...style }}>
       <button
         type="button"
-        className={`btn btn-secondary btn-${size}`}
+        className={`btn btn-${variant} btn-${size}`}
         style={{ width: '100%' }}
         onClick={handleClick}
         disabled={loading}
