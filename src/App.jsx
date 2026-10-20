@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import { ToastProvider } from './context/ToastProvider';
 import { AuthProvider } from './context/AuthProvider';
 import ProtectedRoute from './components/ProtectedRoute';
+import ServerWakeNotice from './components/ServerWakeNotice';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
@@ -16,6 +17,7 @@ export default function App() {
       <AuthProvider>
         <ToastProvider>
           <div className="app-container">
+            <ServerWakeNotice />
             <Navbar />
             <main className="main-content">
               <Routes>
