@@ -13,6 +13,9 @@ const apiClient = axios.create({
 
 export const TOKEN_KEY = 'url_shortener_token';
 
+// Public demo account served by the API (POST /api/auth/demo). Safe to show on screen.
+export const DEMO_CREDENTIALS = { email: 'demo@urlshortener.dev', password: 'demo1234' };
+
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY) || localStorage.getItem('token');
 }
@@ -91,6 +94,12 @@ export const apiService = {
   // POST /api/auth/login
   login: async ({ email, password }) => {
     const response = await apiClient.post('/api/auth/login', { email, password });
+    return response.data;
+  },
+
+  // POST /api/auth/demo (one-click public demo account)
+  demoLogin: async () => {
+    const response = await apiClient.post('/api/auth/demo');
     return response.data;
   },
 

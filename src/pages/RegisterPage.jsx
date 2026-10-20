@@ -4,6 +4,7 @@ import { User, Mail, Lock, ArrowRight, Loader2, AlertCircle, Link2, Sparkles, Sh
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { getErrorMessage } from '../services/api';
+import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -207,6 +208,9 @@ export default function RegisterPage() {
           >
             Log in here &rarr;
           </Link>
+          <div style={{ marginTop: '1rem' }}>
+            <DemoLoginButton label="Or skip sign-up: try the demo" size="sm" />
+          </div>
         </div>
       </div>
     </div>
