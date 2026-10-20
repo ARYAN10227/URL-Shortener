@@ -19,6 +19,7 @@ import {
 import apiService, { getErrorMessage, buildShortUrl } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
+import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuth();
@@ -190,6 +191,14 @@ export default function LandingPage() {
                   </>
                 )}
               </button>
+              {!isAuthenticated && (
+                <>
+                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', margin: '0.85rem 0' }}>
+                    or explore without signing up
+                  </div>
+                  <DemoLoginButton />
+                </>
+              )}
             </form>
           ) : (
             <div className="result-card">
@@ -330,10 +339,13 @@ export default function LandingPage() {
               Search, filter, paginate, edit aliases, and review aggregated click metrics.
             </p>
           </div>
-          <Link to={isAuthenticated ? "/dashboard" : "/register"} className="btn btn-primary btn-lg">
-            <span>{isAuthenticated ? "Go to Dashboard" : "Get Started Free"}</span>
-            <ArrowRight size={18} />
-          </Link>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <Link to={isAuthenticated ? "/dashboard" : "/register"} className="btn btn-primary btn-lg">
+              <span>{isAuthenticated ? "Go to Dashboard" : "Get Started Free"}</span>
+              <ArrowRight size={18} />
+            </Link>
+            {!isAuthenticated && <div style={{ minWidth: '220px' }}><DemoLoginButton /></div>}
+          </div>
         </div>
       </section>
     </div>

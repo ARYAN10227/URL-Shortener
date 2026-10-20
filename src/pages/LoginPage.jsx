@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Loader2, AlertCircle, Link2, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { getErrorMessage } from '../services/api';
+import { getErrorMessage, DEMO_CREDENTIALS } from '../services/api';
+import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -76,6 +77,40 @@ export default function LoginPage() {
       </div>
 
       <div className="card" style={{ padding: '2rem' }}>
+        <div
+          style={{
+            background: 'rgba(99, 102, 241, 0.08)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            borderRadius: 'var(--radius-md)',
+            padding: '1rem 1.15rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.875rem',
+          }}
+        >
+          <div style={{ fontWeight: 700, marginBottom: '0.35rem' }}>👋 Just looking around?</div>
+          <div style={{ color: 'var(--text-muted)', marginBottom: '0.85rem' }}>
+            Use the demo account — no sign-up needed.
+            <br />
+            Email: <code>{DEMO_CREDENTIALS.email}</code> · Password: <code>{DEMO_CREDENTIALS.password}</code>
+          </div>
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <DemoLoginButton label="One-click demo login" size="sm" style={{ flex: '1 1 160px' }} />
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              style={{ flex: '1 1 140px' }}
+              onClick={() => {
+                setEmail(DEMO_CREDENTIALS.email);
+                setPassword(DEMO_CREDENTIALS.password);
+                setError(null);
+              }}
+              disabled={loading}
+            >
+              Fill in demo credentials
+            </button>
+          </div>
+        </div>
+
         {error && (
           <div
             style={{
