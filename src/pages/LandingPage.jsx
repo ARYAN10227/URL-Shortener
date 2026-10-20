@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Link2,
   Sparkles,
@@ -21,7 +21,8 @@ import { useAuth } from '../context/AuthContext';
 import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function LandingPage() {
-  const { isAuthenticated, loginDemo } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { addToast } = useToast();
 
   const [originalUrl, setOriginalUrl] = useState('');
@@ -42,12 +43,15 @@ export default function LandingPage() {
       return;
     }
 
+    if (!isAuthenticated) {
+      // Keep what they typed; the login page has a one-click demo button.
+      addToast('Log in or use the demo account to shorten links.', 'info');
+      navigate('/login', { state: { from: { pathname: '/dashboard' } } });
+      return;
+    }
+
     setLoading(true);
     try {
-      // No account needed: visitors are signed in to the public demo account on the fly.
-      if (!isAuthenticated) {
-        await loginDemo();
-      }
       const data = await apiService.shortenUrl({
         originalUrl: trimmedUrl,
         shortCode: shortCode.trim() || undefined,
@@ -135,6 +139,7 @@ export default function LandingPage() {
                     type="text"
                     className="form-input"
                     placeholder="e.g. launch2026, my-promo"
+                    maxLength={20}
                     value={shortCode}
                     onChange={(e) => setShortCode(e.target.value)}
                     disabled={loading}
@@ -177,7 +182,7 @@ export default function LandingPage() {
                   </>
                 ) : !isAuthenticated ? (
                   <>
-                    <span>Shorten URL</span>
+                    <span>Log in to shorten</span>
                     <ArrowRight size={18} />
                   </>
                 ) : (
@@ -190,9 +195,9 @@ export default function LandingPage() {
               {!isAuthenticated && (
                 <>
                   <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', margin: '0.85rem 0' }}>
-                    no sign-up needed · or jump straight in
+                    or explore instantly — no sign-up needed
                   </div>
-                  <DemoLoginButton label="Open the dashboard (demo)" />
+                  <DemoLoginButton label="🚀 Try the live demo" variant="primary" />
                 </>
               )}
             </form>
