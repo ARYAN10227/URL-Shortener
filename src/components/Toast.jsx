@@ -1,4 +1,4 @@
-import { CheckCircle2, AlertCircle, X } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
 export default function ToastContainer({ toasts, onRemove }) {
   if (!toasts || toasts.length === 0) return null;
@@ -13,6 +13,8 @@ export default function ToastContainer({ toasts, onRemove }) {
         >
           {toast.type === 'success' ? (
             <CheckCircle2 size={18} color="#10b981" />
+          ) : toast.type === 'info' ? (
+            <Info size={18} color="#818cf8" />
           ) : (
             <AlertCircle size={18} color="#f43f5e" />
           )}

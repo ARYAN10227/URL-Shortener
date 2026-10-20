@@ -920,3 +920,8 @@ body {
 .footer-link:hover {
   color: var(--text-main);
 }
+
+.toast-info {
+  border-color: rgba(129, 140, 248, 0.4);
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.15) 0%, var(--bg-card) 100%);
+}

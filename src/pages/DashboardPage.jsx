@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Link2,
   MousePointerClick,
@@ -24,7 +24,8 @@ import {
   CheckCircle2,
   RotateCcw,
 } from 'lucide-react';
-import apiService, { getErrorMessage, buildShortUrl } from '../services/api';
+import apiService, { getErrorMessage, buildShortUrl, DEMO_CREDENTIALS } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import EditUrlModal from '../components/EditUrlModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
@@ -32,6 +33,8 @@ import AnalyticsModal from '../components/AnalyticsModal';
 
 export default function DashboardPage() {
   const { addToast } = useToast();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Create Form State
   const [originalUrl, setOriginalUrl] = useState('');
@@ -198,6 +201,33 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page">
+      {user?.email === DEMO_CREDENTIALS.email && (
+        <div
+          role="note"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
+            background: 'rgba(129, 140, 248, 0.12)',
+            border: '1px solid rgba(129, 140, 248, 0.35)',
+            borderRadius: 'var(--radius-md)',
+            padding: '0.85rem 1.15rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.875rem',
+          }}
+        >
+          <span>
+            👋 You're in the <strong>shared demo account</strong>. Feel free to create, edit and delete
+            links — it keeps the newest 20 and refills sample links if it's ever empty.
+          </span>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => { logout(); navigate('/register'); }}>
+            Create your own account →
+          </button>
+        </div>
+      )}
+
       {/* Top Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
         <div>
@@ -261,7 +291,7 @@ export default function DashboardPage() {
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label" htmlFor="dash-short-code">
                   <span>Custom Short Code (Optional)</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>3-30 chars</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>3-20 chars</span>
                 </label>
                 <div className="input-with-icon">
                   <Sparkles size={16} className="input-icon" />
@@ -270,6 +300,7 @@ export default function DashboardPage() {
                     type="text"
                     className="form-input"
                     placeholder="e.g. promo2026"
+                    maxLength={20}
                     value={shortCode}
                     onChange={(e) => setShortCode(e.target.value)}
                     disabled={createLoading}

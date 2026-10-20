@@ -117,7 +117,7 @@ export default function EditUrlModal({ urlItem, isOpen, onClose, onSuccess }) {
             <label className="form-label" htmlFor="edit-short-code">
               <span>Custom Short Code</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                3-30 alphanumeric characters
+                3-20 letters, numbers, - or _
               </span>
             </label>
             <div className="input-with-icon">
@@ -129,6 +129,7 @@ export default function EditUrlModal({ urlItem, isOpen, onClose, onSuccess }) {
                 value={shortCode}
                 onChange={(e) => setShortCode(e.target.value)}
                 placeholder="custom-alias"
+                maxLength={20}
                 disabled={loading}
               />
             </div>
