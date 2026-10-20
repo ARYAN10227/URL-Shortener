@@ -73,15 +73,14 @@ export default function Navbar() {
             Home
           </NavLink>
 
-          {isAuthenticated && (
-            <NavLink
-              to="/dashboard"
-              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-            >
-              <LayoutDashboard size={16} />
-              <span>Dashboard</span>
-            </NavLink>
-          )}
+          {/* Always visible: visitors are signed in to the demo account automatically. */}
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+          >
+            <LayoutDashboard size={16} />
+            <span>Dashboard</span>
+          </NavLink>
 
           <a
             href="https://url-shortener-api-h1dj.onrender.com/api-docs"
@@ -151,12 +150,12 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  to="/register"
+                  to="/dashboard"
                   className="btn btn-primary btn-sm"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                 >
                   <UserPlus size={14} />
-                  <span>Get Started</span>
+                  <span>Live Demo</span>
                 </Link>
               </>
             )}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Link2,
   Sparkles,
@@ -14,7 +14,6 @@ import {
   AlertCircle,
   RotateCcw,
   CheckCircle2,
-  LogIn,
 } from 'lucide-react';
 import apiService, { getErrorMessage, buildShortUrl } from '../services/api';
 import { useToast } from '../context/ToastContext';
@@ -22,9 +21,8 @@ import { useAuth } from '../context/AuthContext';
 import DemoLoginButton from '../components/DemoLoginButton';
 
 export default function LandingPage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loginDemo } = useAuth();
   const { addToast } = useToast();
-  const navigate = useNavigate();
 
   const [originalUrl, setOriginalUrl] = useState('');
   const [shortCode, setShortCode] = useState('');
@@ -44,13 +42,12 @@ export default function LandingPage() {
       return;
     }
 
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: { pathname: '/dashboard' } } });
-      return;
-    }
-
     setLoading(true);
     try {
+      // No account needed: visitors are signed in to the public demo account on the fly.
+      if (!isAuthenticated) {
+        await loginDemo();
+      }
       const data = await apiService.shortenUrl({
         originalUrl: trimmedUrl,
         shortCode: shortCode.trim() || undefined,
@@ -180,8 +177,7 @@ export default function LandingPage() {
                   </>
                 ) : !isAuthenticated ? (
                   <>
-                    <LogIn size={18} />
-                    <span>Sign In to Shorten URL</span>
+                    <span>Shorten URL</span>
                     <ArrowRight size={18} />
                   </>
                 ) : (
@@ -194,9 +190,9 @@ export default function LandingPage() {
               {!isAuthenticated && (
                 <>
                   <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', margin: '0.85rem 0' }}>
-                    or explore without signing up
+                    no sign-up needed · or jump straight in
                   </div>
-                  <DemoLoginButton />
+                  <DemoLoginButton label="Open the dashboard (demo)" />
                 </>
               )}
             </form>
