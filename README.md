@@ -9,9 +9,12 @@
 ![React Router](https://img.shields.io/badge/React_Router-7-CA4245?logo=reactrouter&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?logo=vercel&logoColor=white)
 
-### 👉 Try it without signing up: click **“Try the live demo”**
+### 🌐 [Open the live app → url-shortener-frontend-t-aryan.vercel.app](https://url-shortener-frontend-t-aryan.vercel.app)
 
-Demo account · Email `demo@urlshortener.dev` · Password `demo1234`
+**No sign-up, no login:** open the Dashboard and you're signed in to a demo account automatically.
+Real accounts still work — demo credentials: `demo@urlshortener.dev` / `demo1234`
+
+*The free backend sleeps when idle, so the very first load can take up to a minute.*
 
 </div>
 
@@ -23,7 +26,7 @@ Demo account · Email `demo@urlshortener.dev` · Password `demo1234`
 - **Dashboard** with search, sorting, filtering by clicks and pagination
 - **Edit and delete** links (with confirmation)
 - **Analytics** per link: total clicks and click history with date filters
-- **Accounts** with JWT authentication — or the one-click **demo account**
+- **Accounts** with JWT authentication — and a **demo account** visitors are signed in to automatically
 - **Cold-start aware**: the free backend sleeps when idle, so the app shows a “waking up” notice
   instead of failing, and never logs you out just because the server is slow
 
